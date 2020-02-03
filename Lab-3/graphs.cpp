@@ -18,6 +18,9 @@ class graph {
     void printAllPathsHelper(int,int,bool[],int[],int);
     bool pathExists(int,int);
     bool isConnected();
+    int findMother();
+    int findMotherHelper(int);
+    bool detectCycle(int);
 };
 
 
@@ -188,26 +191,73 @@ bool graph :: isConnected() {
   return true;
 }
 
+int graph :: findMother() {
+
+  int mother = -1;
+
+  for(int i=0; i<v; i++) {
+      mother = findMotherHelper(i);
+      if(mother == -1) continue;
+      else break;
+  }
+  return mother;
+}
+
+int graph :: findMotherHelper(int source) {
+  bool visited[v] = {false};
+  int stack[v];
+  int top = -1;
+  int vertices[v]; int index = 0;
+  stack[++top] = source; visited[source] = true;
+  while(top>=0) {
+    int pop = stack[top--]; vertices[index++] = pop;
+      for(int i=0; i<v; i++) {
+        if(visited[i] == false && adj[pop][i]==1) {
+          stack[++top] = i;
+          visited[i] = true;
+        }
+      }
+  }
+  if(index == v) return source;
+  return -1;
+}
+
+bool graph :: detectCycle(int source) {
+  bool visited[v] = {false};
+  int stack[v];
+  int top = -1;
+  int index = 0;
+  stack[++top] = source; visited[source] = true;
+  while(top>=0) {
+    int pop = stack[top--];
+      for(int i=0; i<v; i++) {
+        if(visited[i] == false && adj[pop][i]==1) {
+          stack[++top] = i;
+          visited[i] = true;
+        }
+        else if(visited[i]==true && adj[pop][i]==1 && i!=pop) return true;
+      }
+  }
+  return false;
+}
+
 int main() {
 
   graph g(7);
   g.addEdge(0,1);
   g.addEdge(0,2);
-  g.addEdge(0,3);
   g.addEdge(1,3);
   g.addEdge(1,4);
+  g.addEdge(1,4);
   g.addEdge(2,5);
-  g.addEdge(3,2);
-  g.addEdge(3,5);
-  g.addEdge(3,6);
-  g.addEdge(4,3);
-  g.addEdge(4,6);
-  g.addEdge(6,5);
+  g.addEdge(2,6);
+   // g.bfs(0);
+   // g.dfs(0);
+   // g.filterOdd(0);
+   // g.filterEven(0);
+   // cout<<g.findMother()<<"\n";
+   g.transpose();
+   // cout<<g.detectCycle(0)<<"\n";
 
-  g.bfs(0);
-  g.dfs(0);
-  g.filterOdd(0);
-  g.filterEven(0);
-  g.printAllPaths(1,3);
 
 }
