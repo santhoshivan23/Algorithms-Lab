@@ -21,6 +21,8 @@ class graph {
     int findMother();
     int findMotherHelper(int);
     bool detectCycle(int);
+    void topologicalSort();
+    void primsMST();
 };
 
 
@@ -241,22 +243,65 @@ bool graph :: detectCycle(int source) {
   return false;
 }
 
+
+void graph :: topologicalSort() {
+
+  int visited[v] = {0};
+  int indegree[v] = {0};
+  int i,j;
+
+  for(i=0;i<v;i++)
+    for(j=0; j<v; j++)
+      indegree[j]+=adj[i][j];
+
+  int stack[v];
+  int top = -1;
+
+  for(i=0; i<v; i++)
+    if(!indegree[v]) {
+      stack[++top] = i;
+      visited[i] = true;
+    }
+
+  while(top >= 0) {
+      int pop = stack[top--];
+      cout<<pop<<"\t";
+      for(i = 0 ; i<v; i++)
+        if(adj[pop][i] == 1 && !visited[i])
+          indegree[i]--;
+      for(i=0; i<v; i++)
+        if(!indegree[v]) {
+          stack[++top] = i;
+          visited[i] = true;
+      }
+
+  }
+  cout<<"\n";
+
+
+}
+
+void graph :: prims() {
+
+
+
+}
+
 int main() {
 
-  graph g(7);
+  graph g(5);
   g.addEdge(0,1);
-  g.addEdge(0,2);
+  g.addEdge(1,2);
   g.addEdge(1,3);
-  g.addEdge(1,4);
-  g.addEdge(1,4);
-  g.addEdge(2,5);
-  g.addEdge(2,6);
+  g.addEdge(3,4);
+  g.addEdge(2,4);
+
    // g.bfs(0);
    // g.dfs(0);
    // g.filterOdd(0);
    // g.filterEven(0);
    // cout<<g.findMother()<<"\n";
-   g.transpose();
+   g.topologicalSort();
    // cout<<g.detectCycle(0)<<"\n";
 
 
